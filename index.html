@@ -482,6 +482,7 @@
   }
 
   @keyframes spin { from { transform: translateY(-50%) rotate(0deg); } to { transform: translateY(-50%) rotate(360deg); } }
+  @keyframes spin2 { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
@@ -496,12 +497,23 @@
   </div>
   <div class="header-right">
     <button class="btn-clear" onclick="clearForm()">Clear Form</button>
-    <button class="btn-generate" onclick="generatePDF()">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M12 2v10m0 0l-3-3m3 3l3-3M3 17v2a2 2 0 002 2h14a2 2 0 002-2v-2M7 13v4h10v-4" stroke="#000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Generate PDF
+    <button class="btn-generate" id="submitBtn" onclick="submitReport()">
+      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Submit Report
     </button>
   </div>
 </header>
+
+<!-- SUCCESS OVERLAY -->
+<div id="successOverlay" style="display:none;position:fixed;inset:0;background:rgba(13,26,31,0.97);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:24px;">
+  <div style="text-align:center;max-width:480px;padding:40px;">
+    <div style="font-size:4rem;margin-bottom:16px;">✅</div>
+    <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px;color:var(--success);margin-bottom:12px;">Report Submitted!</h2>
+    <p style="color:var(--muted);font-size:0.95rem;line-height:1.7;margin-bottom:8px;">The daily field report for <strong id="successProject" style="color:var(--text)"></strong> has been sent successfully.</p>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:32px;">The office has been notified via email.</p>
+    <button onclick="resetAfterSubmit()" style="background:var(--accent);color:#fff;border:none;padding:14px 36px;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;border-radius:4px;cursor:pointer;">Start New Report</button>
+  </div>
+</div>
 
 <main id="mainForm">
 
@@ -1015,8 +1027,8 @@
   });
 
   // ── CLEAR FORM ──
-  function clearForm() {
-    if (!confirm('Clear all form data?')) return;
+  function clearForm(silent) {
+    if (!silent && !confirm('Clear all form data?')) return;
     document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"], input[type="tel"], textarea').forEach(el => el.value = '');
     document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
     document.getElementById('reportDate').valueAsDate = new Date();
@@ -1066,6 +1078,112 @@
   }
 
   // ── PDF GENERATION ──
+  // ── WEB3FORMS API KEY ──
+  const WEB3FORMS_KEY = '63600ead-3318-429b-b7c4-75c499ad80f3';
+
+  // ── SUBMIT REPORT ──
+  async function submitReport() {
+    const d = getData();
+    if (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy) {
+      showToast('Please fill in required fields (marked with ✦)', true); return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" stroke-dasharray="31.4" stroke-dashoffset="10" style="animation:spin2 1s linear infinite;transform-origin:center"/></svg> Submitting…`;
+
+    const crewList = d.crew.length ? d.crew.map(w => `${w.name} (${w.role || 'N/A'})`).join(', ') : 'None recorded';
+    const equipList = d.equip.length ? d.equip.map(e => `${e.desc} — ${e.owner || 'N/A'}`).join(', ') : 'None recorded';
+    const weatherStr = [
+      d.tempAM ? `AM: ${d.tempAM}°F` : '',
+      d.tempPM ? `PM: ${d.tempPM}°F` : '',
+      d.windSpeed ? `Wind: ${d.windSpeed} mph` : '',
+      d.weatherConditions.length ? d.weatherConditions.join(', ') : ''
+    ].filter(Boolean).join(' | ');
+
+    const emailBody = `
+PLAYSAFE CONSTRUCTION INC — DAILY FIELD REPORT
+===============================================
+Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}
+
+PROJECT INFORMATION
+-------------------
+Project #:     ${d.projectNumber}
+Project Name:  ${d.projectName}
+Report Date:   ${d.reportDate}
+Day #:         ${d.dayNumber || '—'}
+Site Address:  ${d.siteAddress || '—'}
+Foreman:       ${d.preparedBy}
+
+WEATHER
+-------
+${weatherStr || '—'}
+Notes: ${d.weatherNotes || 'None'}
+
+CREW ON SITE
+------------
+${crewList}
+
+EQUIPMENT ON SITE
+-----------------
+${equipList}
+
+WORK PERFORMED
+--------------
+${d.workDescription || '—'}
+
+MATERIALS DELIVERED / USED
+--------------------------
+${d.materials || '—'}
+
+DELAYS
+------
+${d.delays || 'None'}
+
+ISSUES
+------
+${d.issues || 'None'}
+
+Photos taken on site: ${d.images.length}
+    `.trim();
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `Daily Field Report — ${d.projectName} — ${d.reportDate}`,
+          message: emailBody,
+          from_name: `PlaySafe Field Report — ${d.preparedBy}`
+        })
+      });
+
+      const result = await res.json();
+      if (!result.success) throw new Error(result.message || 'Submission failed');
+      showSuccessScreen(d.projectName, d.reportDate);
+
+    } catch(err) {
+      btn.disabled = false;
+      btn.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Submit Report`;
+      showToast('⚠ Submission failed — check your connection and try again.', true);
+    }
+  }
+
+  function showSuccessScreen(projectName, reportDate) {
+    document.getElementById('successProject').textContent = `${projectName} — ${reportDate}`;
+    const overlay = document.getElementById('successOverlay');
+    overlay.style.display = 'flex';
+  }
+
+  function resetAfterSubmit() {
+    document.getElementById('successOverlay').style.display = 'none';
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = false;
+    btn.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Submit Report`;
+    clearForm(true);
+  }
+
   async function generatePDF() {
     const d = getData();
     if (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy) {
