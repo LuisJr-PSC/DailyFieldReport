@@ -1090,8 +1090,26 @@
   }
 
   // ── PDF GENERATION ──
-  // ── WEB3FORMS API KEY ──
-  const WEB3FORMS_KEY = '63600ead-3318-429b-b7c4-75c499ad80f3';
+  // ── RENDER BACKEND URL ──
+  // Replace with your actual Render service URL after deployment
+  const BACKEND_URL = 'https://playsafe-daily-field-reports.onrender.com';
+
+  // ── COMPRESS IMAGE ──
+  function compressImage(dataUrl, maxWidth = 1200, quality = 0.75) {
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let w = img.width, h = img.height;
+        if (w > maxWidth) { h = Math.round(h * maxWidth / w); w = maxWidth; }
+        canvas.width = w; canvas.height = h;
+        canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = () => resolve(dataUrl);
+      img.src = dataUrl;
+    });
+  }
 
   // ── SUBMIT REPORT ──
   async function submitReport() {
@@ -1104,79 +1122,49 @@
     btn.disabled = true;
     btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#fff" stroke-width="2" stroke-dasharray="31.4" stroke-dashoffset="10" style="animation:spin2 1s linear infinite;transform-origin:center"/></svg> Submitting…`;
 
-    const crewList = d.crew.length ? d.crew.map(w => `${w.name} (${w.role || 'N/A'})`).join(', ') : 'None recorded';
-    const equipList = d.equip.length ? d.equip.map(e => `${e.desc} — ${e.owner || 'N/A'}`).join(', ') : 'None recorded';
-    const weatherStr = [
-      d.tempAM ? `AM: ${d.tempAM}°F` : '',
-      d.tempPM ? `PM: ${d.tempPM}°F` : '',
-      d.windSpeed ? `Wind: ${d.windSpeed} mph` : '',
-      d.weatherConditions.length ? d.weatherConditions.join(', ') : ''
-    ].filter(Boolean).join(' | ');
-
-    const emailBody = `
-PLAYSAFE CONSTRUCTION INC — DAILY FIELD REPORT
-===============================================
-Submitted: ${new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })}
-
-PROJECT INFORMATION
--------------------
-Project #:     ${d.projectNumber}
-Project Name:  ${d.projectName}
-Report Date:   ${d.reportDate}
-Day #:         ${d.dayNumber || '—'}
-Site Address:  ${d.siteAddress || '—'}
-Foreman:       ${d.preparedBy}
-
-WEATHER
--------
-${weatherStr || '—'}
-Notes: ${d.weatherNotes || 'None'}
-
-CREW ON SITE
-------------
-${crewList}
-
-EQUIPMENT ON SITE
------------------
-${equipList}
-
-WORK PERFORMED
---------------
-${d.workDescription || '—'}
-
-MATERIALS DELIVERED / USED
---------------------------
-${d.materials || '—'}
-
-DELAYS
-------
-${d.delays || 'None'}
-
-ISSUES
-------
-${d.issues || 'None'}
-
-Photos taken on site: ${d.images.length}
-    `.trim();
-
     try {
-      // Run email submission and PDF generation at the same time
-      const [emailRes] = await Promise.all([
-        fetch('https://api.web3forms.com/submit', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            access_key: WEB3FORMS_KEY,
-            subject: `Daily Field Report — ${d.projectName} — ${d.reportDate}`,
-            message: emailBody,
-            from_name: `PlaySafe Field Report — ${d.preparedBy}`
-          })
-        }),
-        generatePDF(d) // pass data directly so it doesn't re-collect
-      ]);
+      // Compress images before sending
+      const compressedImages = await Promise.all(
+        d.images.map(async img => ({
+          dataUrl: await compressImage(img.dataUrl),
+          caption: img.caption || ''
+        }))
+      );
 
-      const result = await emailRes.json();
-      if (!result.success) throw new Error(result.message || 'Email submission failed');
+      const payload = {
+        projectNumber:     d.projectNumber,
+        projectName:       d.projectName,
+        reportDate:        d.reportDate,
+        dayNumber:         d.dayNumber || '',
+        siteAddress:       d.siteAddress || '',
+        preparedBy:        d.preparedBy,
+        tempAM:            d.tempAM || '',
+        tempPM:            d.tempPM || '',
+        windSpeed:         d.windSpeed || '',
+        weatherConditions: d.weatherConditions,
+        weatherNotes:      d.weatherNotes || '',
+        crewList:          d.crew.map(w => ({ name: w.name, role: w.role || '' })),
+        equipList:         d.equip.map(e => ({ desc: e.desc, owner: e.owner || '' })),
+        crew:              d.crew.length ? d.crew.map(w => `${w.name} (${w.role || 'N/A'})`).join(', ') : 'None recorded',
+        equipment:         d.equip.length ? d.equip.map(e => `${e.desc} — ${e.owner || 'N/A'}`).join(', ') : 'None recorded',
+        workDescription:   d.workDescription || '',
+        materials:         d.materials || '',
+        delays:            d.delays || '',
+        issues:            d.issues || '',
+        images:            compressedImages,
+        photoCount:        String(compressedImages.length),
+        logoBase64:        window._logoDataUrl ? window._logoDataUrl.split(',')[1] : '',
+        submittedAt:       new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })
+      };
+
+      const res = await fetch(`${BACKEND_URL}/submit-report`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const result = await res.json();
+      if (!res.ok || !result.success) throw new Error(result.error || 'Submission failed');
 
       showSuccessScreen(d.projectName, d.reportDate);
 
@@ -1184,6 +1172,7 @@ Photos taken on site: ${d.images.length}
       btn.disabled = false;
       btn.innerHTML = `<svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Submit Report`;
       showToast('⚠ Submission failed — check your connection and try again.', true);
+      console.error(err);
     }
   }
 
