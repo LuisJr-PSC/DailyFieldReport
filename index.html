@@ -213,6 +213,67 @@
   /* WORKER TABLE */
   .worker-table-wrap { overflow-x: auto; }
 
+  /* CREW CHECKLIST */
+  .crew-checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .crew-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 8px 10px;
+    transition: all 0.15s;
+  }
+
+  .crew-row.checked {
+    background: rgba(90,181,212,0.1);
+    border-color: var(--accent);
+  }
+
+  .crew-check-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    user-select: none;
+  }
+
+  .crew-row.checked .crew-check-label {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .crew-checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--accent);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .crew-role-select {
+    width: 110px;
+    flex-shrink: 0;
+    padding: 5px 8px;
+    font-size: 0.8rem;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .crew-row.checked .crew-role-select {
+    opacity: 1;
+    pointer-events: all;
+  }
+
   table {
     width: 100%;
     border-collapse: collapse;
@@ -612,30 +673,138 @@
       <span class="section-title">Crew & Personnel</span>
     </div>
     <div class="section-body">
-      <div class="worker-table-wrap">
-        <table id="crewTable">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody id="crewBody">
-            <tr>
-              <td><input type="text" placeholder="Worker name" /></td>
-              <td>
-                <select>
-                  <option value="">— Select —</option>
-                  <option>Foreman</option>
-                  <option>Installer</option>
-                </select>
-              </td>
-              <td><button class="btn-remove-row" onclick="removeRow(this, 'crewBody')">×</button></td>
-            </tr>
-          </tbody>
-        </table>
-        <button class="btn-add-row" onclick="addCrewRow()">+ Add Worker</button>
+      <p class="section-hint">Check each worker on site today and select their role.</p>
+      <div class="crew-checklist" id="crewChecklist">
+        <div class="crew-row" data-name="Pedro Araujo">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Pedro Araujo"> Pedro Araujo
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Lupe Ruvalcaba">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Lupe Ruvalcaba"> Lupe Ruvalcaba
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Jose Arturo Bran">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Jose Arturo Bran"> Jose Arturo Bran
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Phillip Alvarez">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Phillip Alvarez"> Phillip Alvarez
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Sergio Diaz">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Sergio Diaz"> Sergio Diaz
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Haroldo Lanzuna">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Haroldo Lanzuna"> Haroldo Lanzuna
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Marco Melgar">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Marco Melgar"> Marco Melgar
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Axel Pineda">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Axel Pineda"> Axel Pineda
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Abel Solares">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Abel Solares"> Abel Solares
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Edgar Solares">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Edgar Solares"> Edgar Solares
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Jose Temo Solares">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Jose Temo Solares"> Jose Temo Solares
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Luis Ceballos">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Luis Ceballos"> Luis Ceballos
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
+        <div class="crew-row" data-name="Leonel Ramirez">
+          <label class="crew-check-label">
+            <input type="checkbox" class="crew-checkbox" value="Leonel Ramirez"> Leonel Ramirez
+          </label>
+          <select class="crew-role-select" disabled>
+            <option value="">— Role —</option>
+            <option>Foreman</option>
+            <option>Installer</option>
+          </select>
+        </div>
       </div>
     </div>
   </div>
@@ -762,8 +931,15 @@
   }
   document.querySelectorAll('input, textarea, select').forEach(el => el.addEventListener('input', updateProgress));
 
-  // ── WEATHER CHIPS ──
-  function toggleWeather(label) {
+  // ── CREW CHECKLIST TOGGLE ──
+  document.querySelectorAll('.crew-checkbox').forEach(cb => {
+    cb.addEventListener('change', () => {
+      const row = cb.closest('.crew-row');
+      row.classList.toggle('checked', cb.checked);
+      const sel = row.querySelector('.crew-role-select');
+      if (!cb.checked) sel.value = '';
+    });
+  });
     label.classList.toggle('selected');
     label.querySelector('input').checked = label.classList.contains('selected');
   }
@@ -788,21 +964,7 @@
   function toggleCheck(label) {
     label.classList.toggle('checked');
     label.querySelector('input').checked = label.classList.contains('checked');
-  }
-
-  // ── CREW TABLE ──
-  function addCrewRow() {
-    const tbody = document.getElementById('crewBody');
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><input type="text" placeholder="Worker name" /></td>
-      <td><select>
-        <option value="">— Select —</option>
-        <option>Foreman</option><option>Installer</option>
-      </select></td>
-      <td><button class="btn-remove-row" onclick="removeRow(this, 'crewBody')">×</button></td>`;
-    tbody.appendChild(tr);
-  }
+  }  }
 
   // ── EQUIPMENT TABLE ──
   function addEquipRow() {
@@ -1071,6 +1233,11 @@
     document.getElementById('reportDate').valueAsDate = new Date();
     document.querySelectorAll('.weather-chip').forEach(c => c.classList.remove('selected'));
     updateSkyDisplay('');
+    document.querySelectorAll('#crewChecklist .crew-checkbox').forEach(cb => {
+      cb.checked = false;
+      cb.closest('.crew-row').classList.remove('checked');
+      cb.closest('.crew-row').querySelector('.crew-role-select').value = '';
+    });
     document.querySelectorAll('.check-chip').forEach(c => c.classList.remove('checked'));
     uploadedImages.length = 0;
     renderImageGrid();
@@ -1085,12 +1252,14 @@
     const v = id => (document.getElementById(id)||{}).value || '';
     const weatherSelected = Array.from(document.querySelectorAll('#weatherChips .weather-chip.selected input')).map(i => i.value);
 
-    // crew
+    // crew — from checklist
     const crew = [];
-    document.querySelectorAll('#crewBody tr').forEach(tr => {
-      const cells = tr.querySelectorAll('input, select');
-      const name = cells[0]?.value?.trim();
-      if (name) crew.push({ name, role: cells[1]?.value });
+    document.querySelectorAll('#crewChecklist .crew-row').forEach(row => {
+      const cb   = row.querySelector('.crew-checkbox');
+      const sel  = row.querySelector('.crew-role-select');
+      if (cb && cb.checked) {
+        crew.push({ name: cb.value, role: sel?.value || '' });
+      }
     });
 
     // equipment
