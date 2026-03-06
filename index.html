@@ -721,14 +721,14 @@
       <span class="section-title">Site Photos</span>
     </div>
     <div class="section-body">
-      <p class="section-hint">Photos will be included in the PDF report. Add optional captions for each image.</p>
+      <p class="section-hint">Up to 12 photos included in the submitted report. Add optional captions for each image.</p>
       <div class="image-upload-zone" id="dropZone" onclick="document.getElementById('photoInput').click()"
            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
         <input type="file" id="photoInput" accept="image/*" multiple onchange="handleImages(this.files)" />
         <div class="upload-icon">📷</div>
         <div class="upload-text">
           <strong>Click to upload</strong> or drag & drop photos here<br>
-          Supports JPG, PNG, HEIC, WEBP — multiple files accepted
+          Supports JPG, PNG, HEIC, WEBP &nbsp;·&nbsp; Max 12 photos per report
         </div>
       </div>
       <div class="image-grid" id="imageGrid"></div>
@@ -811,8 +811,19 @@
   }
 
   // ── IMAGES ──
+  const MAX_IMAGES = 12;
+
   function handleImages(files) {
-    Array.from(files).forEach(file => {
+    const remaining = MAX_IMAGES - uploadedImages.length;
+    if (remaining <= 0) {
+      showToast(`Maximum ${MAX_IMAGES} photos allowed per report.`, true);
+      return;
+    }
+    const toAdd = Array.from(files).slice(0, remaining);
+    if (Array.from(files).length > remaining) {
+      showToast(`Only ${remaining} more photo(s) can be added (max ${MAX_IMAGES} total).`, true);
+    }
+    toAdd.forEach(file => {
       const reader = new FileReader();
       reader.onload = e => {
         const obj = { dataUrl: e.target.result, caption: '' };
@@ -1309,11 +1320,9 @@ Photos taken on site: ${d.images.length}
 
     // Title
     setTxt(C.white); pdf.setFontSize(24); pdf.setFont('helvetica', 'bold');
-    pdf.text('DAILY FIELD REPORT', 92, 38);
+    pdf.text('DAILY FIELD REPORT', 92, 44);
     setTxt(C.accent); pdf.setFontSize(9); pdf.setFont('helvetica', 'normal');
-    pdf.text('PLAYSAFE CONSTRUCTION INC', 92, 54);
-    setTxt([160, 170, 200]); pdf.setFontSize(8);
-    pdf.text('CONSTRUCTION DOCUMENTATION', 92, 66);
+    pdf.text('PLAYSAFE CONSTRUCTION INC', 92, 62);
 
     // Date block in header
     setFill([30, 36, 55]); pdf.rect(PW - 160, 14, 120, 60, 'F');
@@ -1506,26 +1515,6 @@ Photos taken on site: ${d.images.length}
       }
       if (col !== 0) y += imgH + 24;
     }
-
-    // Signature block
-    checkPage(80);
-    sectionHeader('Signatures & Certification');
-
-    const sigW = W / 2 - 6;
-    [['Foreman / Report Prepared By', d.preparedBy], ['Authorized Signature', '']].forEach((item, i) => {
-      const sx = M + i * (sigW + 12);
-      setFill(C.light); pdf.rect(sx, y, sigW, 65, 'F');
-      setDraw(C.border); pdf.rect(sx, y, sigW, 65, 'S');
-      setTxt(C.muted); pdf.setFontSize(7); pdf.setFont('helvetica', 'bold');
-      pdf.text(item[0].toUpperCase(), sx + 8, y + 12);
-      if (item[1]) { setTxt(C.text); pdf.setFontSize(9); pdf.text(item[1], sx + 8, y + 26); }
-      // Signature line
-      setDraw([180, 185, 200]); pdf.setLineWidth(0.75);
-      pdf.line(sx + 8, y + 50, sx + sigW - 8, y + 50);
-      setTxt(C.muted); pdf.setFontSize(6.5);
-      pdf.text('Signature / Date', sx + 8, y + 60);
-    });
-    y += 75;
 
     addFooter();
 
