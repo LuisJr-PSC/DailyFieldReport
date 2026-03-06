@@ -1005,6 +1005,9 @@
       if (!cb.checked) sel.value = '';
     });
   });
+
+  // ── WEATHER CHIPS ──
+  function toggleWeatherChip(label) {
     label.classList.toggle('selected');
     label.querySelector('input').checked = label.classList.contains('selected');
   }
@@ -1029,7 +1032,7 @@
   function toggleCheck(label) {
     label.classList.toggle('checked');
     label.querySelector('input').checked = label.classList.contains('checked');
-  }  }
+  }
 
   // ── EQUIPMENT TABLE ──
   function addEquipRow() {
