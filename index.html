@@ -510,7 +510,8 @@
     <div style="font-size:4rem;margin-bottom:16px;">✅</div>
     <h2 style="font-family:'Bebas Neue',sans-serif;font-size:2.2rem;letter-spacing:3px;color:var(--success);margin-bottom:12px;">Report Submitted!</h2>
     <p style="color:var(--muted);font-size:0.95rem;line-height:1.7;margin-bottom:8px;">The daily field report for <strong id="successProject" style="color:var(--text)"></strong> has been sent successfully.</p>
-    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:32px;">The office has been notified via email.</p>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:8px;">📧 The office has been notified via email.</p>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:32px;">📄 A PDF copy has been saved to your device's Downloads folder.</p>
     <button onclick="resetAfterSubmit()" style="background:var(--accent);color:#fff;border:none;padding:14px 36px;font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:2px;border-radius:4px;cursor:pointer;">Start New Report</button>
   </div>
 </div>
@@ -1148,19 +1149,24 @@ Photos taken on site: ${d.images.length}
     `.trim();
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          access_key: WEB3FORMS_KEY,
-          subject: `Daily Field Report — ${d.projectName} — ${d.reportDate}`,
-          message: emailBody,
-          from_name: `PlaySafe Field Report — ${d.preparedBy}`
-        })
-      });
+      // Run email submission and PDF generation at the same time
+      const [emailRes] = await Promise.all([
+        fetch('https://api.web3forms.com/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            access_key: WEB3FORMS_KEY,
+            subject: `Daily Field Report — ${d.projectName} — ${d.reportDate}`,
+            message: emailBody,
+            from_name: `PlaySafe Field Report — ${d.preparedBy}`
+          })
+        }),
+        generatePDF(d) // pass data directly so it doesn't re-collect
+      ]);
 
-      const result = await res.json();
-      if (!result.success) throw new Error(result.message || 'Submission failed');
+      const result = await emailRes.json();
+      if (!result.success) throw new Error(result.message || 'Email submission failed');
+
       showSuccessScreen(d.projectName, d.reportDate);
 
     } catch(err) {
@@ -1184,9 +1190,9 @@ Photos taken on site: ${d.images.length}
     clearForm(true);
   }
 
-  async function generatePDF() {
-    const d = getData();
-    if (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy) {
+  async function generatePDF(existingData) {
+    const d = existingData || getData();
+    if (!existingData && (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy)) {
       showToast('Please fill in required fields (marked with ✦)', true); return;
     }
 
