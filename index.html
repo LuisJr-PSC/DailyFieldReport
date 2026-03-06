@@ -264,19 +264,7 @@
     flex-shrink: 0;
   }
 
-  .crew-role-select {
-    width: 110px;
-    flex-shrink: 0;
-    padding: 5px 8px;
-    font-size: 0.8rem;
-    opacity: 0.4;
-    pointer-events: none;
-  }
 
-  .crew-row.checked .crew-role-select {
-    opacity: 1;
-    pointer-events: all;
-  }
 
   table {
     width: 100%;
@@ -584,7 +572,6 @@
     .crew-row { padding: 11px 12px; }
     .crew-check-label { font-size: 0.95rem; }
     .crew-checkbox { width: 20px; height: 20px; }
-    .crew-role-select { width: 120px !important; font-size: 0.9rem !important; }
 
     /* Weather chips */
     .weather-icons { gap: 7px; }
@@ -738,137 +725,72 @@
       <span class="section-title">Crew & Personnel</span>
     </div>
     <div class="section-body">
-      <p class="section-hint">Check each worker on site today and select their role.</p>
+      <p class="section-hint">Check each worker on site today.</p>
       <div class="crew-checklist" id="crewChecklist">
         <div class="crew-row" data-name="Pedro Araujo">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Pedro Araujo"> Pedro Araujo
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Lupe Ruvalcaba">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Lupe Ruvalcaba"> Lupe Ruvalcaba
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Jose Arturo Bran">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Jose Arturo Bran"> Jose Arturo Bran
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Phillip Alvarez">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Phillip Alvarez"> Phillip Alvarez
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Sergio Diaz">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Sergio Diaz"> Sergio Diaz
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Haroldo Lanzuna">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Haroldo Lanzuna"> Haroldo Lanzuna
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Marco Melgar">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Marco Melgar"> Marco Melgar
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Axel Pineda">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Axel Pineda"> Axel Pineda
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Abel Solares">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Abel Solares"> Abel Solares
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Edgar Solares">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Edgar Solares"> Edgar Solares
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Jose Temo Solares">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Jose Temo Solares"> Jose Temo Solares
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Luis Ceballos">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Luis Ceballos"> Luis Ceballos
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
         <div class="crew-row" data-name="Leonel Ramirez">
           <label class="crew-check-label">
             <input type="checkbox" class="crew-checkbox" value="Leonel Ramirez"> Leonel Ramirez
           </label>
-          <select class="crew-role-select" disabled>
-            <option value="">— Role —</option>
-            <option>Foreman</option>
-            <option>Installer</option>
-          </select>
         </div>
       </div>
     </div>
@@ -969,6 +891,32 @@
     </div>
   </div>
 
+  <!-- SECTION 8: PSI DOCUMENT -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <span class="section-title">PSI Document <span style="font-size:0.75rem;font-weight:400;opacity:0.6;margin-left:6px;">(Optional)</span></span>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">Upload a PSI image to append as a full page to the submitted report.</p>
+      <div class="image-upload-zone" id="psiDropZone" onclick="document.getElementById('psiInput').click()"
+           ondragover="handlePsiDragOver(event)" ondragleave="handlePsiDragLeave(event)" ondrop="handlePsiDrop(event)"
+           style="cursor:pointer;">
+        <input type="file" id="psiInput" accept="image/*" onchange="handlePsiUpload(this.files)" style="display:none;" />
+        <div class="upload-icon">📄</div>
+        <div class="upload-text">
+          <strong>Click to upload PSI image</strong> or drag & drop here<br>
+          Supports JPG, PNG, HEIC, WEBP
+        </div>
+      </div>
+      <div id="psiFileInfo" style="display:none;margin-top:10px;padding:10px 14px;background:rgba(89,170,196,0.08);border:1px solid rgba(89,170,196,0.25);border-radius:6px;display:none;align-items:center;gap:10px;">
+        <span style="font-size:1.3rem;">📋</span>
+        <span id="psiFileName" style="flex:1;font-size:0.9rem;color:var(--text);"></span>
+        <button onclick="clearPsiDoc()" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:1.1rem;padding:2px 6px;" title="Remove PSI document">✕</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SUBMIT BUTTON -->
   <div style="display:flex;justify-content:center;padding:12px 0 20px;">
     <button class="btn-generate" id="submitBtn" onclick="submitReport()" style="padding:16px 60px;font-size:1.2rem;letter-spacing:3px;border-radius:6px;box-shadow:0 4px 24px rgba(90,181,212,0.25);">
@@ -984,6 +932,7 @@
 <script>
   // ── STATE ──
   const uploadedImages = []; // {dataUrl, caption}
+  let psiDoc = null; // {dataUrl, name} for PSI PDF
 
   // ── SET DEFAULT DATE ──
   document.getElementById('reportDate').valueAsDate = new Date();
@@ -1001,8 +950,7 @@
     cb.addEventListener('change', () => {
       const row = cb.closest('.crew-row');
       row.classList.toggle('checked', cb.checked);
-      const sel = row.querySelector('.crew-role-select');
-      if (!cb.checked) sel.value = '';
+
     });
   });
 
@@ -1114,6 +1062,34 @@
     e.preventDefault();
     document.getElementById('dropZone').classList.remove('dragover');
     handleImages(e.dataTransfer.files);
+  }
+
+  // ── PSI DOCUMENT UPLOAD ──
+  function handlePsiUpload(files) {
+    const file = files[0];
+    if (!file || !file.type.startsWith('image/')) { showToast('Please upload an image file.', true); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      psiDoc = { dataUrl: e.target.result, name: file.name };
+      const info = document.getElementById('psiFileInfo');
+      info.style.display = 'flex';
+      document.getElementById('psiFileName').textContent = file.name;
+      document.getElementById('psiDropZone').style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+  function clearPsiDoc() {
+    psiDoc = null;
+    document.getElementById('psiFileInfo').style.display = 'none';
+    document.getElementById('psiDropZone').style.display = '';
+    document.getElementById('psiInput').value = '';
+  }
+  function handlePsiDragOver(e) { e.preventDefault(); document.getElementById('psiDropZone').classList.add('dragover'); }
+  function handlePsiDragLeave(e) { document.getElementById('psiDropZone').classList.remove('dragover'); }
+  function handlePsiDrop(e) {
+    e.preventDefault();
+    document.getElementById('psiDropZone').classList.remove('dragover');
+    handlePsiUpload(e.dataTransfer.files);
   }
 
   // ── LOGO ──
@@ -1307,15 +1283,13 @@
     document.querySelectorAll('#crewChecklist .crew-checkbox').forEach(cb => {
       cb.checked = false;
       cb.closest('.crew-row').classList.remove('checked');
-      cb.closest('.crew-row').querySelector('.crew-role-select').value = '';
     });
     document.querySelectorAll('.check-chip').forEach(c => c.classList.remove('checked'));
     uploadedImages.length = 0;
     renderImageGrid();
-    ['crewBody','equipBody'].forEach(id => {
-      const tbody = document.getElementById(id);
-      while (tbody.rows.length > 1) tbody.deleteRow(1);
-    });
+    clearPsiDoc();
+    const equipTbody = document.getElementById('equipBody');
+    if (equipTbody) while (equipTbody.rows.length > 1) equipTbody.deleteRow(1);
   }
 
   // ── COLLECT DATA ──
@@ -1327,9 +1301,8 @@
     const crew = [];
     document.querySelectorAll('#crewChecklist .crew-row').forEach(row => {
       const cb   = row.querySelector('.crew-checkbox');
-      const sel  = row.querySelector('.crew-role-select');
       if (cb && cb.checked) {
-        crew.push({ name: cb.value, role: sel?.value || '' });
+        crew.push({ name: cb.value });
       }
     });
 
@@ -1351,7 +1324,8 @@
       workDescription: v('workDescription'),
       materials: v('materials'),
       delays: v('delays'), issues: v('issues'),
-      images: [...uploadedImages]
+      images: [...uploadedImages],
+      psiDoc: psiDoc ? { ...psiDoc } : null
     };
   }
 
@@ -1409,9 +1383,9 @@
         windSpeed:         d.windSpeed || '',
         weatherConditions: d.weatherConditions,
         weatherNotes:      d.weatherNotes || '',
-        crewList:          d.crew.map(w => ({ name: w.name, role: w.role || '' })),
+        crewList:          d.crew.map(w => ({ name: w.name })),
         equipList:         d.equip.map(e => ({ desc: e.desc, owner: e.owner || '' })),
-        crew:              d.crew.length ? d.crew.map(w => `${w.name} (${w.role || 'N/A'})`).join(', ') : 'None recorded',
+        crew:              d.crew.length ? d.crew.map(w => w.name).join(', ') : 'None recorded',
         equipment:         d.equip.length ? d.equip.map(e => `${e.desc} — ${e.owner || 'N/A'}`).join(', ') : 'None recorded',
         workDescription:   d.workDescription || '',
         materials:         d.materials || '',
@@ -1419,6 +1393,8 @@
         issues:            d.issues || '',
         images:            compressedImages,
         photoCount:        String(compressedImages.length),
+        psiDocBase64:      d.psiDoc ? d.psiDoc.dataUrl.split(',')[1] : '',
+        psiDocName:        d.psiDoc ? d.psiDoc.name : '',
         logoBase64:        window._logoDataUrl ? window._logoDataUrl.split(',')[1] : '',
         submittedAt:       new Date().toLocaleString('en-US', { dateStyle: 'full', timeStyle: 'short' })
       };
@@ -1773,7 +1749,41 @@
 
     addFooter();
 
-    // ── SAVE ──
+    // ── PSI DOCUMENT PAGE ──
+    if (d.psiDoc && d.psiDoc.dataUrl) {
+      pdf.addPage();
+      try {
+        // Fit image to full page, preserving aspect ratio with white background
+        const img = new Image();
+        await new Promise(resolve => {
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const scale = Math.min((PW * 3.78) / img.naturalWidth, (PH * 3.78) / img.naturalHeight);
+            canvas.width  = Math.round(img.naturalWidth  * scale);
+            canvas.height = Math.round(img.naturalHeight * scale);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            const imgData = canvas.toDataURL('image/jpeg', 0.92);
+            // Centre on page with small margin
+            const margin = 5;
+            const fitW = PW - margin * 2;
+            const fitH = PH - margin * 2;
+            const aspect = img.naturalWidth / img.naturalHeight;
+            let drawW = fitW, drawH = fitW / aspect;
+            if (drawH > fitH) { drawH = fitH; drawW = fitH * aspect; }
+            const ox = margin + (fitW - drawW) / 2;
+            const oy = margin + (fitH - drawH) / 2;
+            pdf.addImage(imgData, 'JPEG', ox, oy, drawW, drawH);
+            resolve();
+          };
+          img.onerror = resolve;
+          img.src = d.psiDoc.dataUrl;
+        });
+      } catch(e) { /* skip on error */ }
+    }
+
     const safe = str => str.replace(/[^a-zA-Z0-9\-_]/g, '_');
     const filename = `${safe(d.projectNumber)}_${safe(d.projectName)}_FieldReport_${d.reportDate}.pdf`;
     pdf.save(filename);
