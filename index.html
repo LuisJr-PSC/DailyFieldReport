@@ -215,8 +215,8 @@
 
   /* CREW CHECKLIST */
   .crew-checklist {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 6px;
   }
 
@@ -529,10 +529,71 @@
 
   /* RESPONSIVE */
   @media (max-width: 640px) {
-    header { padding: 16px 20px; }
-    main { padding: 0 16px; margin: 24px auto; }
-    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.5rem; }
+    /* Layout */
+    header { padding: 14px 16px; gap: 10px; }
+    header h1 { font-size: 1.3rem; }
+    header p { font-size: 0.75rem; }
+    .logo-mark { width: 44px !important; height: 44px !important; }
+    .btn-clear { padding: 8px 12px; font-size: 0.75rem; }
+    main { padding: 0 12px; margin: 16px auto; gap: 12px; }
+
+    /* Section cards */
+    .section-card { border-radius: 8px; }
+    .section-header { padding: 12px 14px; }
+    .section-title { font-size: 0.9rem; }
+    .section-body { padding: 14px; gap: 12px; }
+
+    /* Grids collapse to single column */
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; gap: 12px; }
+
+    /* Inputs */
+    input, select, textarea {
+      font-size: 1rem !important; /* prevents iOS auto-zoom on focus */
+      padding: 11px 12px !important;
+    }
+    textarea { min-height: 90px; }
+
+    /* Equipment table — stack rows */
+    .worker-table-wrap { overflow-x: visible; }
+    .worker-table-wrap table thead { display: none; }
+    .worker-table-wrap table tbody tr {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .worker-table-wrap table tbody td {
+      padding: 0;
+      flex: 1 1 calc(50% - 20px);
+      min-width: 120px;
+    }
+    .worker-table-wrap table tbody td:last-child {
+      flex: 0 0 32px;
+    }
+    .worker-table-wrap table tbody td input,
+    .worker-table-wrap table tbody td select {
+      width: 100%;
+    }
+
+    /* Crew checklist — already single column, just ensure tap targets are large */
+    .crew-row { padding: 11px 12px; }
+    .crew-check-label { font-size: 0.95rem; }
+    .crew-checkbox { width: 20px; height: 20px; }
+    .crew-role-select { width: 120px !important; font-size: 0.9rem !important; }
+
+    /* Weather chips */
+    .weather-icons { gap: 7px; }
+    .weather-chip { padding: 7px 10px; font-size: 0.8rem; }
+
+    /* Photo upload */
+    .photo-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+
+    /* Submit button */
+    #submitBtn { padding: 15px 32px !important; font-size: 1rem !important; width: 100%; justify-content: center; }
+
+    /* Progress bar hint */
+    .section-hint { font-size: 0.78rem; }
   }
 
   /* Divider */
