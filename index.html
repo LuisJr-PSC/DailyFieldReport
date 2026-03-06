@@ -880,10 +880,28 @@
     </div>
   </div>
 
-  <!-- SECTION 7: PHOTOS -->
+  <!-- SECTION 7: PROJECT PROGRESS -->
   <div class="section-card">
     <div class="section-header">
       <div class="section-number">7</div>
+      <span class="section-title">Project Progress</span>
+    </div>
+    <div class="section-body">
+      <div class="field">
+        <label>Overall Project Status <span style="color:var(--accent);font-size:0.75rem;">✦</span></label>
+        <select id="projectProgress" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:0.95rem;">
+          <option value="">— Select status —</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done / Complete">Done / Complete</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 8: PHOTOS -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-number">8</div>
       <span class="section-title">Site Photos</span>
     </div>
     <div class="section-body">
@@ -904,7 +922,7 @@
   <!-- SECTION 8: PSI DOCUMENT -->
   <div class="section-card">
     <div class="section-header">
-      <div class="section-number">8</div>
+      <div class="section-number">9</div>
       <span class="section-title">PSI Document <span style="font-size:0.75rem;font-weight:400;opacity:0.6;margin-left:6px;">(Optional)</span></span>
     </div>
     <div class="section-body">
@@ -949,7 +967,7 @@
 
   // ── PROGRESS ──
   function updateProgress() {
-    const required = ['projectNumber','projectName','reportDate','preparedBy','workDescription'];
+    const required = ['projectNumber','projectName','reportDate','preparedBy','workDescription','projectProgress'];
     const filled = required.filter(id => document.getElementById(id).value.trim() !== '').length;
     document.getElementById('progressFill').style.width = (filled / required.length * 100) + '%';
   }
@@ -1388,6 +1406,7 @@
       workDescription: v('workDescription'),
       materials: v('materials'),
       delays: v('delays'), issues: v('issues'),
+      projectProgress: v('projectProgress'),
       images: [...uploadedImages],
       psiDoc: psiDoc ? { ...psiDoc } : null
     };
@@ -1418,7 +1437,7 @@
   // ── SUBMIT REPORT ──
   async function submitReport() {
     const d = getData();
-    if (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy) {
+    if (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy || !d.projectProgress) {
       showToast('Please fill in required fields (marked with ✦)', true); return;
     }
 
@@ -1454,6 +1473,7 @@
         workDescription:   d.workDescription || '',
         materials:         d.materials || '',
         delays:            d.delays || '',
+        projectProgress:   d.projectProgress || '',
         issues:            d.issues || '',
         images:            compressedImages,
         photoCount:        String(compressedImages.length),
@@ -1498,7 +1518,7 @@
 
   async function generatePDF(existingData) {
     const d = existingData || getData();
-    if (!existingData && (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy)) {
+    if (!existingData && (!d.projectNumber || !d.projectName || !d.reportDate || !d.preparedBy || !d.projectProgress)) {
       showToast('Please fill in required fields (marked with ✦)', true); return;
     }
 
