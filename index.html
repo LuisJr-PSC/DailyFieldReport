@@ -497,10 +497,6 @@
   </div>
   <div class="header-right">
     <button class="btn-clear" onclick="clearForm()">Clear Form</button>
-    <button class="btn-generate" id="submitBtn" onclick="submitReport()">
-      <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      Submit Report
-    </button>
   </div>
 </header>
 
@@ -588,14 +584,18 @@
       </div>
       <div class="field">
         <label>Sky Conditions</label>
-        <div class="weather-icons" id="weatherChips">
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="☀️ Sunny"> ☀️ Sunny</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="⛅ Partly Cloudy"> ⛅ Partly Cloudy</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="☁️ Overcast"> ☁️ Overcast</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="🌧️ Rain"> 🌧️ Rain</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="⛈️ Thunderstorm"> ⛈️ Thunderstorm</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="💨 High Wind"> 💨 High Winds</label>
-          <label class="weather-chip" onclick="toggleWeather(this)"><input type="checkbox" value="🌫️ Fog"> 🌫️ Fog</label>
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:10px 14px;min-height:42px;display:flex;align-items:center;">
+          <span id="skyConditionText" style="color:var(--muted);font-style:italic;font-size:0.95rem;">Auto-filling from location…</span>
+        </div>
+        <!-- Hidden checkboxes preserve data collection -->
+        <div id="weatherChips" style="display:none;">
+          <label class="weather-chip"><input type="checkbox" value="☀️ Sunny"></label>
+          <label class="weather-chip"><input type="checkbox" value="⛅ Partly Cloudy"></label>
+          <label class="weather-chip"><input type="checkbox" value="☁️ Overcast"></label>
+          <label class="weather-chip"><input type="checkbox" value="🌧️ Rain"></label>
+          <label class="weather-chip"><input type="checkbox" value="⛈️ Thunderstorm"></label>
+          <label class="weather-chip"><input type="checkbox" value="💨 High Wind"></label>
+          <label class="weather-chip"><input type="checkbox" value="🌫️ Fog"></label>
         </div>
       </div>
       <div class="field">
@@ -735,6 +735,14 @@
     </div>
   </div>
 
+  <!-- SUBMIT BUTTON -->
+  <div style="display:flex;justify-content:center;padding:12px 0 20px;">
+    <button class="btn-generate" id="submitBtn" onclick="submitReport()" style="padding:16px 60px;font-size:1.2rem;letter-spacing:3px;border-radius:6px;box-shadow:0 4px 24px rgba(90,181,212,0.25);">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Submit Report
+    </button>
+  </div>
+
 </main>
 
 <div class="toast" id="toast"></div>
@@ -758,6 +766,22 @@
   function toggleWeather(label) {
     label.classList.toggle('selected');
     label.querySelector('input').checked = label.classList.contains('selected');
+  }
+
+  function updateSkyDisplay(value) {
+    const el = document.getElementById('skyConditionText');
+    if (!el) return;
+    if (value) {
+      el.textContent = value;
+      el.style.color = 'var(--text)';
+      el.style.fontStyle = 'normal';
+      el.style.fontSize = '1.05rem';
+    } else {
+      el.textContent = 'Auto-filling from location…';
+      el.style.color = 'var(--muted)';
+      el.style.fontStyle = 'italic';
+      el.style.fontSize = '0.95rem';
+    }
   }
 
   // ── CHECK CHIPS ──
@@ -954,12 +978,12 @@
       else if (code >= 80 && code <= 82) skyChip = '🌧️ Rain';
       else if (code >= 95) skyChip = '⛈️ Thunderstorm';
       if (cur.wind_speed_10m >= 25) skyChip = '💨 High Wind';
-      if (skyChip) {
-        document.querySelectorAll('.weather-chip').forEach(c => {
-          if (c.querySelector('input').value === skyChip) { c.classList.add('selected'); c.querySelector('input').checked = true; }
-          else { c.classList.remove('selected'); c.querySelector('input').checked = false; }
-        });
-      }
+      document.querySelectorAll('.weather-chip').forEach(c => {
+        const val = c.querySelector('input').value;
+        if (val === skyChip) { c.classList.add('selected'); c.querySelector('input').checked = true; }
+        else { c.classList.remove('selected'); c.querySelector('input').checked = false; }
+      });
+      updateSkyDisplay(skyChip);
       const shortLabel = locationLabel.split(',').slice(0,2).join(',');
       document.getElementById('weatherStatusText').textContent = `✓ Weather auto-loaded for ${shortLabel} — ${Math.round(cur.temperature_2m)}°F, Wind ${Math.round(cur.wind_speed_10m)} mph`;
       document.getElementById('refreshWeatherBtn').style.display = 'block';
@@ -1018,6 +1042,7 @@
         if (val === skyChip) { c.classList.add('selected'); c.querySelector('input').checked = true; }
         else { c.classList.remove('selected'); c.querySelector('input').checked = false; }
       });
+      updateSkyDisplay(skyChip);
 
       document.getElementById('weatherStatusText').textContent = `✓ Weather loaded for ${geoData[0].display_name.split(',').slice(0,2).join(',')} — ${Math.round(cur.temperature_2m)}°F, Wind ${Math.round(cur.wind_speed_10m)} mph`;
       document.getElementById('refreshWeatherBtn').style.display = 'block';
@@ -1045,6 +1070,7 @@
     document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
     document.getElementById('reportDate').valueAsDate = new Date();
     document.querySelectorAll('.weather-chip').forEach(c => c.classList.remove('selected'));
+    updateSkyDisplay('');
     document.querySelectorAll('.check-chip').forEach(c => c.classList.remove('checked'));
     uploadedImages.length = 0;
     renderImageGrid();
