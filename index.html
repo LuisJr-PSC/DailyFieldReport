@@ -793,6 +793,16 @@
           </label>
         </div>
       </div>
+      <!-- Add custom crew member -->
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center;">
+        <input type="text" id="newCrewName" placeholder="Add crew member name…"
+          style="flex:1;padding:9px 12px;border:1px solid var(--border);border-radius:4px;background:var(--surface);color:var(--text);font-size:0.9rem;"
+          onkeydown="if(event.key==='Enter'){event.preventDefault();addCrewMember();}" />
+        <button onclick="addCrewMember()"
+          style="padding:9px 18px;background:var(--accent);color:#fff;border:none;border-radius:4px;font-size:0.85rem;font-weight:600;cursor:pointer;white-space:nowrap;letter-spacing:1px;">
+          + Add
+        </button>
+      </div>
     </div>
   </div>
 
@@ -823,7 +833,7 @@
                   <option>Sub-Contractor</option>
                 </select>
               </td>
-              <td><button class="btn-remove-row" onclick="removeRow(this, 'equipBody')">×</button></td>
+              <td><button class="btn-remove-row" onclick="removeRow(this, 'equipBody')" style="visibility:hidden">×</button></td>
             </tr>
           </tbody>
         </table>
@@ -991,6 +1001,7 @@
       <td><select><option value="">—</option><option>Company Owned</option><option>Rental</option><option>Sub-Contractor</option></select></td>
       <td><button class="btn-remove-row" onclick="removeRow(this, 'equipBody')">×</button></td>`;
     tbody.appendChild(tr);
+    updateRemoveBtns('equipBody');
   }
 
   // ── VISITORS TABLE ──
@@ -1009,7 +1020,16 @@
 
   function removeRow(btn, tbodyId) {
     const tbody = document.getElementById(tbodyId);
-    if (tbody.rows.length > 1) btn.closest('tr').remove();
+    if (tbody.rows.length > 1) {
+      btn.closest('tr').remove();
+      updateRemoveBtns(tbodyId);
+    }
+  }
+
+  function updateRemoveBtns(tbodyId) {
+    const tbody = document.getElementById(tbodyId);
+    const btns = tbody.querySelectorAll('.btn-remove-row');
+    btns.forEach(b => b.style.visibility = tbody.rows.length > 1 ? 'visible' : 'hidden');
   }
 
   // ── IMAGES ──
@@ -1062,6 +1082,37 @@
     e.preventDefault();
     document.getElementById('dropZone').classList.remove('dragover');
     handleImages(e.dataTransfer.files);
+  }
+
+  // ── ADD CUSTOM CREW MEMBER ──
+  function addCrewMember() {
+    const input = document.getElementById('newCrewName');
+    const name = input.value.trim();
+    if (!name) return;
+    const checklist = document.getElementById('crewChecklist');
+    // Check for duplicate
+    const existing = [...checklist.querySelectorAll('.crew-checkbox')].map(c => c.value.toLowerCase());
+    if (existing.includes(name.toLowerCase())) {
+      input.value = '';
+      showToast('That crew member is already in the list.', true);
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'crew-row checked';
+    div.dataset.name = name;
+    div.dataset.custom = 'true';
+    div.innerHTML = `
+      <label class="crew-check-label">
+        <input type="checkbox" class="crew-checkbox" value="${name}" checked> ${name}
+      </label>
+      <button onclick="removeCrewMember(this)"
+        style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--danger);font-size:1rem;padding:2px 6px;opacity:0.7;" title="Remove">✕</button>`;
+    checklist.appendChild(div);
+    input.value = '';
+  }
+
+  function removeCrewMember(btn) {
+    btn.closest('.crew-row').remove();
   }
 
   // ── PSI DOCUMENT UPLOAD ──
