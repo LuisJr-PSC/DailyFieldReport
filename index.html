@@ -1121,11 +1121,24 @@
     if (!file || !file.type.startsWith('image/')) { showToast('Please upload an image file.', true); return; }
     const reader = new FileReader();
     reader.onload = e => {
-      psiDoc = { dataUrl: e.target.result, name: file.name };
-      const info = document.getElementById('psiFileInfo');
-      info.style.display = 'flex';
-      document.getElementById('psiFileName').textContent = file.name;
-      document.getElementById('psiDropZone').style.display = 'none';
+      // Draw through canvas so browser applies EXIF orientation before sending
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width  = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(img, 0, 0);
+        const correctedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        psiDoc = { dataUrl: correctedDataUrl, name: file.name };
+        const info = document.getElementById('psiFileInfo');
+        info.style.display = 'flex';
+        document.getElementById('psiFileName').textContent = file.name;
+        document.getElementById('psiDropZone').style.display = 'none';
+      };
+      img.src = e.target.result;
     };
     reader.readAsDataURL(file);
   }
